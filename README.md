@@ -68,7 +68,7 @@ Performance may vary with unusual angles/images
 
 Sample images in /uploaded are for testing only
 
-INTRO
+Intro
 
 <img width="1913" height="864" alt="image" src="https://github.com/user-attachments/assets/3cd00621-f2d2-48bb-a1d5-c08da71335cf" />
 <img width="1384" height="857" alt="image" src="https://github.com/user-attachments/assets/4eae524d-051f-4dfd-ba0d-64826b97fbde" />
@@ -77,6 +77,7 @@ INTRO
 
 
 🤝 Contributing
+
 Contributions are welcome! Please follow these steps:
 
 Fork the repository
