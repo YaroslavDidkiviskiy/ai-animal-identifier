@@ -34,9 +34,7 @@ source .venv/bin/activate  # Linux/MacOS
 # Install dependencies
 pip install -r requirements.txt
 
-Running the Application
-
-# Start Flask development server
+# Running the Application
 python app.py
 ```
 # Access application at:
@@ -61,31 +59,6 @@ Classes: Cats, Dogs, Snakes
 
 Model Formats: .h5 and .keras formats included
 
-Model Files
-text
-model/
-├── animal_classifier.h5
-├── animal_classifier.keras
-├── animal_classifier_weights.h5
-└── class_names.json
-📂 Project Structure
-text
-FlaskProject/
-├── .venv/                 # Virtual environment (ignored by Git)
-├── model/                 # Model files
-│   ├── animal_classifier.h5
-│   ├── animal_classifier.keras
-│   ├── animal_classifier_weights.h5
-│   └── class_names.json
-├── static/                # Static assets (CSS/JS/Images) ( need to create )
-├── uploaded/              # Sample test images
-├── templates/             # HTML templates
-│   ├── error.html
-│   ├── index.html
-│   └── result.html
-├── .gitignore             # Git ignore file
-├── app.py                 # Main application
-└── requirements.txt       # Dependencies
 ⚠️ Known Limitations
 Works best with clear animal images
 
@@ -94,6 +67,14 @@ Limited to cats, dogs, and snakes recognition
 Performance may vary with unusual angles/images
 
 Sample images in /uploaded are for testing only
+
+INTRO
+
+<img width="1913" height="864" alt="image" src="https://github.com/user-attachments/assets/3cd00621-f2d2-48bb-a1d5-c08da71335cf" />
+<img width="1384" height="857" alt="image" src="https://github.com/user-attachments/assets/4eae524d-051f-4dfd-ba0d-64826b97fbde" />
+<img width="1020" height="862" alt="image" src="https://github.com/user-attachments/assets/44a25d1a-eada-4284-839d-08b8d175cf72" />
+<img width="1103" height="784" alt="image" src="https://github.com/user-attachments/assets/aaab28f8-b41d-4ef7-888e-f2d57e2147db" />
+
 
 🤝 Contributing
 Contributions are welcome! Please follow these steps:
