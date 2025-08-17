@@ -135,7 +135,6 @@
 
             const img = document.querySelector('.animal-image');
             if (img) {
-                // Додаємо параметр часу для уникнення кешування
                 const timestamp = new Date().getTime();
                 img.src = img.src + (img.src.includes('?') ? '&' : '?') + 't=' + timestamp;
 
@@ -165,7 +164,6 @@
             <div class="confidence-fill"></div>
         </div>
 
-        <!-- Контейнер зображення з резервним варіантом -->
         <img src="{{ url_for('static', filename=image_path) }}"
              alt="Uploaded Image"
              class="animal-image"

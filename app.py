@@ -19,7 +19,7 @@ WEIGHTS_PATH = os.path.join(MODEL_DIR, 'animal_classifier_weights.h5')
 CLASS_NAMES_PATH = os.path.join(MODEL_DIR, 'class_names.json')
 
 
-# Функція для створення архітектури моделі
+# function for creating architecture model
 def create_model():
     base_model = MobileNetV2(
         input_shape=(128, 128, 3),
@@ -35,7 +35,7 @@ def create_model():
         Dropout(0.5),
         Dense(128, activation='relu'),
         Dropout(0.3),
-        Dense(3, activation='softmax')  # 3 класи: cats, dogs, snakes
+        Dense(3, activation='softmax')  # 3 classes: cats, dogs, snakes
     ])
 
     model.compile(
@@ -46,7 +46,7 @@ def create_model():
     return model
 
 
-# Завантаження моделі
+# model load
 try:
     model = load_model(MODEL_PATH)
     print("Full model loaded successfully!")
@@ -60,16 +60,16 @@ except Exception as e:
         print(f"Critical error loading model: {str(e2)}")
         model = create_model()
 
-# Завантаження класів
+# classes load
 try:
     with open(CLASS_NAMES_PATH, 'r') as f:
         class_names = json.load(f)
 except:
-    class_names = ['cats', 'dogs', 'snakes']  # Значення за замовчуванням
+    class_names = ['cats', 'dogs', 'snakes']  # value by default
 
 print(f"Class names: {class_names}")
 
-# Папка для завантажень
+# folder for uploads
 UPLOAD_FOLDER = os.path.join(app.static_folder, 'uploaded')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 print(f"Upload folder: {UPLOAD_FOLDER}")
