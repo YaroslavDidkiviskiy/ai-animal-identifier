@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification Result</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .animal-name {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #6a11cb;
+        }
+        .confidence {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .confidence-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+        .animal-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-height: 150px;
+            object-fit: cover;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2575fc;
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #1a5fd0;
+            transform: translateY(-2px);
+        }
+        .emoji {
+            font-size: 48px;
+            margin: 15px 0;
+        }
+        .image-fallback {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 40px 20px;
+            margin: 20px 0;
+            color: #666;
+        }
+        .image-fallback i {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+        .error-message {
+            color: #e74c3c;
+            background: #fdeded;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .error-message ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .debug-info {
+            font-size: 12px;
+            color: #777;
+            margin-top: 10px;
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            const confidence = {{ confidence }};
+            const fill = document.querySelector('.confidence-fill');
+            if (fill) {
+                fill.style.width = confidence + '%';
+            }
+
+            const img = document.querySelector('.animal-image');
+            if (img) {
+                // Додаємо параметр часу для уникнення кешування
+                const timestamp = new Date().getTime();
+                img.src = img.src + (img.src.includes('?') ? '&' : '?') + 't=' + timestamp;
+
+                // Обробка помилок завантаження
+                img.onerror = function() {
+                    document.querySelector('.image-fallback').classList.remove('hidden');
+                    document.querySelector('.error-message').classList.remove('hidden');
+                    document.querySelector('.debug-info').classList.remove('hidden');
+                    img.classList.add('hidden');
+                };
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">
+            {% if label == 'cat' %}😺{% endif %}
+            {% if label == 'dog' %}🐶{% endif %}
+            {% if label == 'snake' %}🐍{% endif %}
+        </div>
+        <h1>This is a</h1>
+        <div class="animal-name">{{ label|capitalize }}</div>
+
+        <div class="confidence">Confidence: {{ confidence }}%</div>
+        <div class="confidence-bar">
+            <div class="confidence-fill"></div>
+        </div>
+
+        <!-- Контейнер зображення з резервним варіантом -->
+        <img src="{{ url_for('static', filename=image_path) }}"
+             alt="Uploaded Image"
+             class="animal-image"
+             onerror="this.classList.add('hidden');
+                      document.querySelector('.image-fallback').classList.remove('hidden');
+                      document.querySelector('.error-message').classList.remove('hidden');
+                      document.querySelector('.debug-info').classList.remove('hidden');">
+
+        <div class="image-fallback hidden">
+            <i>🖼️</i>
+            <div>Image Preview Not Available</div>
+        </div>
+
+        <div class="error-message hidden">
+            ⚠️ Could not load image. Possible reasons:
+            <ul>
+                <li>File not found in static directory</li>
+                <li>Unsupported image format</li>
+                <li>Incorrect file path configuration</li>
+                <li>File permission issues</li>
+            </ul>
+        </div>
+
+        <div class="debug-info hidden">
+            <strong>DEBUG INFO:</strong><br>
+            Image Path: {{ image_path }}<br>
+            Static URL: {{ url_for('static', filename=image_path) }}
+        </div>
+
+        <button class="btn" onclick="window.location.href='/'">Try Another Image</button>
+    </div>
+</body>
+</html>

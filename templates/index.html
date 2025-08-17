@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Classifier</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-box:hover {
+            border-color: #2575fc;
+            background-color: #f8f9ff;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #6a11cb;
+            margin-bottom: 15px;
+        }
+        .file-input {
+            display: none;
+        }
+        .file-label {
+            background-color: #6a11cb;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .file-label:hover {
+            background-color: #2575fc;
+            transform: translateY(-2px);
+        }
+        .submit-btn {
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #1a5fd0;
+            transform: translateY(-2px);
+        }
+        .filename {
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Animal Image Classifier</h1>
+        <p>Upload an image of a cat, dog, or snake</p>
+
+        <form action="/predict" method="post" enctype="multipart/form-data">
+            <div class="upload-box" id="upload-area">
+                <div class="upload-icon">📁</div>
+                <p>Drag & drop your image here</p>
+                <p>or</p>
+                <label class="file-label">
+                    Select Image
+                    <input type="file" name="image" class="file-input" id="file-input" required>
+                </label>
+                <div class="filename" id="filename"></div>
+            </div>
+            <button type="submit" class="submit-btn">Classify Animal</button>
+        </form>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const filename = document.getElementById('filename');
+        const uploadArea = document.getElementById('upload-area');
+
+        fileInput.addEventListener('change', function(e) {
+            if (this.files.length > 0) {
+                filename.textContent = this.files[0].name;
+            }
+        });
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#2575fc';
+            this.style.backgroundColor = '#f8f9ff';
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            this.style.borderColor = '#ccc';
+            this.style.backgroundColor = 'transparent';
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#ccc';
+            this.style.backgroundColor = 'transparent';
+
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                filename.textContent = e.dataTransfer.files[0].name;
+            }
+        });
+    </script>
+</body>
+</html>
