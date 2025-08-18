@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -20,130 +20,119 @@
             padding: 20px;
         }
         .container {
-            background-color: white;
+            background: #fff;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             padding: 30px;
-            width: 100%;
             max-width: 500px;
+            width: 100%;
             text-align: center;
         }
         h1 {
             color: #333;
             margin-bottom: 20px;
-            font-size: 28px;
+        }
+        .emoji {
+            font-size: 48px;
+            margin: 15px 0;
         }
         .animal-name {
             font-size: 32px;
             font-weight: bold;
-            margin: 20px 0;
             color: #6a11cb;
+            margin: 20px 0;
         }
         .confidence {
             font-size: 18px;
-            margin-bottom: 20px;
             color: #555;
         }
         .confidence-bar {
             height: 20px;
-            background-color: #e0e0e0;
+            background: #e0e0e0;
             border-radius: 10px;
             margin: 20px 0;
             overflow: hidden;
         }
         .confidence-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+            width: 0;
             border-radius: 10px;
             transition: width 1s ease-in-out;
         }
         .animal-image {
-            max-width: 100%;
+            width: 100%;
             border-radius: 10px;
             margin: 20px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            min-height: 150px;
             object-fit: cover;
+            min-height: 150px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         .btn {
-            display: inline-block;
-            background-color: #2575fc;
-            color: white;
-            text-decoration: none;
+            background: #2575fc;
+            color: #fff;
+            border: none;
             padding: 12px 30px;
             border-radius: 50px;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
             font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
         }
         .btn:hover {
-            background-color: #1a5fd0;
+            background: #1a5fd0;
             transform: translateY(-2px);
         }
-        .emoji {
-            font-size: 48px;
-            margin: 15px 0;
+        .image-fallback,
+        .error-message,
+        .debug-info {
+            display: none;
+            margin: 20px 0;
         }
         .image-fallback {
             background: #f5f5f5;
             border-radius: 10px;
             padding: 40px 20px;
-            margin: 20px 0;
             color: #666;
-        }
-        .image-fallback i {
-            font-size: 48px;
-            display: block;
-            margin-bottom: 15px;
-            color: #ccc;
         }
         .error-message {
             color: #e74c3c;
             background: #fdeded;
             padding: 15px;
             border-radius: 8px;
-            margin: 20px 0;
             text-align: left;
         }
         .error-message ul {
-            padding-left: 20px;
             margin-top: 10px;
+            padding-left: 20px;
         }
         .debug-info {
             font-size: 12px;
-            color: #777;
-            margin-top: 10px;
             background: #f8f8f8;
             padding: 10px;
             border-radius: 5px;
+            color: #777;
             text-align: left;
-        }
-        .hidden {
-            display: none;
         }
     </style>
     <script>
-        window.onload = function() {
+        window.onload = function () {
             const confidence = {{ confidence }};
-            const fill = document.querySelector('.confidence-fill');
-            if (fill) {
-                fill.style.width = confidence + '%';
-            }
+            document.querySelector('.confidence-fill').style.width = confidence + '%';
 
             const img = document.querySelector('.animal-image');
-            if (img) {
-                const timestamp = new Date().getTime();
-                img.src = img.src + (img.src.includes('?') ? '&' : '?') + 't=' + timestamp;
+            const fallback = document.querySelector('.image-fallback');
+            const errorBox = document.querySelector('.error-message');
+            const debugInfo = document.querySelector('.debug-info');
 
-                // Обробка помилок завантаження
-                img.onerror = function() {
-                    document.querySelector('.image-fallback').classList.remove('hidden');
-                    document.querySelector('.error-message').classList.remove('hidden');
-                    document.querySelector('.debug-info').classList.remove('hidden');
-                    img.classList.add('hidden');
+            if (img) {
+                img.src += (img.src.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+
+                img.onerror = function () {
+                    img.style.display = 'none';
+                    fallback.style.display = 'block';
+                    errorBox.style.display = 'block';
+                    debugInfo.style.display = 'block';
                 };
             }
         };
@@ -152,9 +141,7 @@
 <body>
     <div class="container">
         <div class="emoji">
-            {% if label == 'cat' %}😺{% endif %}
-            {% if label == 'dog' %}🐶{% endif %}
-            {% if label == 'snake' %}🐍{% endif %}
+            {% if label == 'cat' %}😺{% elif label == 'dog' %}🐶{% elif label == 'snake' %}🐍{% endif %}
         </div>
         <h1>This is a</h1>
         <div class="animal-name">{{ label|capitalize }}</div>
@@ -166,18 +153,14 @@
 
         <img src="{{ url_for('static', filename=image_path) }}"
              alt="Uploaded Image"
-             class="animal-image"
-             onerror="this.classList.add('hidden');
-                      document.querySelector('.image-fallback').classList.remove('hidden');
-                      document.querySelector('.error-message').classList.remove('hidden');
-                      document.querySelector('.debug-info').classList.remove('hidden');">
+             class="animal-image">
 
-        <div class="image-fallback hidden">
-            <i>🖼️</i>
+        <div class="image-fallback">
+            <div style="font-size: 48px;">🖼️</div>
             <div>Image Preview Not Available</div>
         </div>
 
-        <div class="error-message hidden">
+        <div class="error-message">
             ⚠️ Could not load image. Possible reasons:
             <ul>
                 <li>File not found in static directory</li>
@@ -187,7 +170,7 @@
             </ul>
         </div>
 
-        <div class="debug-info hidden">
+        <div class="debug-info">
             <strong>DEBUG INFO:</strong><br>
             Image Path: {{ image_path }}<br>
             Static URL: {{ url_for('static', filename=image_path) }}
