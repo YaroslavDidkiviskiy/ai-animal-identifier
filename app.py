@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dense, Dropout
 import numpy as np
 import os
 import json
@@ -12,14 +12,14 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__, static_folder='static')
 
-# Шляхи до файлів моделі
+# paths to the model files
 MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'model')
 MODEL_PATH = os.path.join(MODEL_DIR, 'animal_classifier.h5')
 WEIGHTS_PATH = os.path.join(MODEL_DIR, 'animal_classifier_weights.h5')
 CLASS_NAMES_PATH = os.path.join(MODEL_DIR, 'class_names.json')
 
 
-# function for creating architecture model
+# function for creating model`s architecture
 def create_model():
     base_model = MobileNetV2(
         input_shape=(128, 128, 3),
@@ -97,14 +97,14 @@ def predict():
     if file.filename == '':
         return render_template('error.html', message='No file selected')
 
-    # Збереження файлу з безпечним іменем
+    # Saving a file with a safe name
     filename = secure_filename(file.filename)
     filepath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filepath)
     print(f"Image saved to: {filepath}")
 
     try:
-        # Підготовка та прогноз
+        # Preparation and forecast
         img = prepare_image(filepath)
         prediction = model.predict(img)[0]
         predicted_idx = np.argmax(prediction)
@@ -112,8 +112,6 @@ def predict():
         confidence = round(100 * np.max(prediction), 2)
 
         print(f"Prediction: {predicted_class} ({confidence}%)")
-
-        # Фікс: Використовуємо лише forward slashes у шляху
         image_path = f"uploaded/{filename}"
 
         return render_template('result.html',
